@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Shuffle</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        input {
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
+            text-align: center;
+            border: none;
+            background: #222;
+            color: white;
+            outline: none;
+            overflow: hidden;
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        #shuffling-text {
+            font-size: 2rem;
+            margin-top: 20px;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid white;
+        }
+        /* @keyframes shuffle {
+            0% { transform: rotateX(0deg); }
+            100% { transform: rotateX(360deg); }
+        } */
+    </style>
+</head>
+<body>
+    <div class="input-container">
+        <input type="number" maxlength="1" id="digit1">
+        <input type="number" maxlength="1" id="digit2">
+        <input type="number" maxlength="1" id="digit3">
+        <input type="number" maxlength="1" id="digit4">
+        <input type="number" maxlength="1" id="digit5">
+    </div>
+    <div id="shuffling-text">**********</div>
+
+    <script>
+        const correctPassword = "12345";
+        const inputs = document.querySelectorAll("input");
+        const textElement = document.getElementById("shuffling-text");
+        
+        function shuffleText() {
+            let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            return Array(10).fill(0).map(() => chars[Math.floor(Math.random() * chars.length)]).join("");
+        }
+        
+        function startShuffling() {
+            textElement.style.animation = "shuffle 0.3s infinite linear";
+            textElement.innerText = shuffleText();
+            if (!inputsFilledCorrectly()) {
+                setTimeout(startShuffling, 50);
+            } else {
+                textElement.style.animation = "none";
+                revealMessage();
+            }
+        }
+        
+        function inputsFilledCorrectly() {
+            return Array.from(inputs).map(input => input.value).join("") === correctPassword;
+        }
+        
+        function revealMessage() {
+            let message = "ACCESS GRANTED";
+            let index = 0;
+            let interval = setInterval(() => {
+                if (index < message.length) {
+                    textElement.innerText = message.substring(0, index + 1) + shuffleText().substring(index + 1);
+                    index++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 150);
+        }
+        
+        inputs.forEach((input, index) => {
+            input.addEventListener("input", (e) => {
+                if (input.value.length > 1) {
+                    input.value = input.value.slice(0, 1);
+                }
+                if (input.value !== "" && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+                startShuffling();
+            });
+        });
+        
+        startShuffling();
+    </script>
+</body>
+</html>

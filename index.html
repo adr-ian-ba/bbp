@@ -29,8 +29,6 @@
             background: #222;
             color: white;
             outline: none;
-            overflow: hidden;
-            -moz-appearance: textfield;
         }
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
@@ -40,18 +38,40 @@
         #shuffling-text {
             font-size: 2rem;
             margin-top: 20px;
-            display: inline-block;
             white-space: nowrap;
             overflow: hidden;
             border-right: 2px solid white;
         }
-        /* @keyframes shuffle {
-            0% { transform: rotateX(0deg); }
-            100% { transform: rotateX(360deg); }
-        } */
+        #submit-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            background: #414141;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        #video-container {
+            display: none;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
     </style>
 </head>
 <body>
+    <div id="video-container">
+        <iframe id="video-frame" width="560" height="315" 
+            src="https://www.youtube.com/embed/GBIIQ0kP15E?si=cFZW11JhDCLE1CeE" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            allowfullscreen>
+        </iframe>    
+    </div>
     <div class="input-container">
         <input type="number" maxlength="1" id="digit1">
         <input type="number" maxlength="1" id="digit2">
@@ -60,11 +80,17 @@
         <input type="number" maxlength="1" id="digit5">
     </div>
     <div id="shuffling-text">**********</div>
+    <button id="submit-btn">Submit</button>
 
+    
     <script>
         const correctPassword = "12345";
         const inputs = document.querySelectorAll("input");
         const textElement = document.getElementById("shuffling-text");
+        const submitBtn = document.getElementById("submit-btn");
+        const videoContainer = document.getElementById("video-container");
+        const videoFrame = document.getElementById("video-frame");
+        let shuffling = true;
         
         function shuffleText() {
             let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
@@ -72,12 +98,15 @@
         }
         
         function startShuffling() {
-            textElement.style.animation = "shuffle 0.3s infinite linear";
-            textElement.innerText = shuffleText();
-            if (!inputsFilledCorrectly()) {
+            if (shuffling) {
+                textElement.innerText = shuffleText();
                 setTimeout(startShuffling, 50);
-            } else {
-                textElement.style.animation = "none";
+            }
+        }
+        
+        function checkPassword() {
+            if (inputsFilledCorrectly()) {
+                shuffling = false;
                 revealMessage();
             }
         }
@@ -91,12 +120,20 @@
             let index = 0;
             let interval = setInterval(() => {
                 if (index < message.length) {
-                    textElement.innerText = message.substring(0, index + 1) + shuffleText().substring(index + 1);
+                    textElement.innerText = 
+                        message.substring(0, index + 1) + shuffleText().substring(index + 1);
                     index++;
                 } else {
                     clearInterval(interval);
+                    setTimeout(() => {
+                        videoContainer.style.display = "block";
+                        setTimeout(() => {
+                            videoContainer.style.opacity = "1";
+                            videoFrame.src += "&autoplay=1"; 
+                        }, 100);
+                    }, 1000);
                 }
-            }, 150);
+            }, 100);
         }
         
         inputs.forEach((input, index) => {
@@ -107,9 +144,10 @@
                 if (input.value !== "" && index < inputs.length - 1) {
                     inputs[index + 1].focus();
                 }
-                startShuffling();
             });
         });
+        
+        submitBtn.addEventListener("click", checkPassword);
         
         startShuffling();
     </script>

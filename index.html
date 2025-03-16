@@ -63,14 +63,7 @@
 </head>
 <body>
     <div id="video-container">
-        <iframe id="video-frame" width="560" height="315" 
-            src="https://www.youtube.com/embed/GBIIQ0kP15E?si=cFZW11JhDCLE1CeE" 
-            title="YouTube video player" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" 
-            allowfullscreen>
-        </iframe>    
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/OgG-dN94NfQ?si=XpMb68hhsMi2Y82L" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>  
     </div>
     <div class="input-container">
         <input type="number" maxlength="1" id="digit1">
@@ -84,7 +77,7 @@
 
     
     <script>
-        const correctPassword = "12345";
+        const correctPassword = "71493";
         const inputs = document.querySelectorAll("input");
         const textElement = document.getElementById("shuffling-text");
         const submitBtn = document.getElementById("submit-btn");
@@ -100,7 +93,7 @@
         function startShuffling() {
             if (shuffling) {
                 textElement.innerText = shuffleText();
-                setTimeout(startShuffling, 50);
+                setTimeout(startShuffling, 70);
             }
         }
         
